@@ -62,6 +62,7 @@ void main() {
 
     const float samples = 3.0;
     float count = 0.0;
+    int dismiss = 0;
     float step = u_XMax / max(u_Resolution.x, u_Resolution.y) * 0.5;
     if(u_Picking) {
         step *= 2.0;
@@ -72,11 +73,16 @@ void main() {
             float tx = p1.x + i * step;
             float ty = p1.y + j * step;
             float f = compare(tx, ty);
+            // 相差过大则
+            if(abs(f) > u_XMax * 2.0) {
+                dismiss += 1;
+            }
             count += (f > 0.0) ? 1.0 : -1.0;
         }
     }
 
-    if(floor(abs(count)) > (u_Picking ? 24.0 : 20.0)) {
+
+    if((abs(count) > (u_Picking ? 24.0 : 18.0)) || dismiss > 5) {
         discard;
     } else {
         float alpha = 1.0;

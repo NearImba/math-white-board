@@ -66,7 +66,7 @@ export function setGlobalUniforms(gl: WebGLRenderingContext, program: WebGLProgr
     const translate = store.getTranslate();
     gl.uniform2f(uTranslate, translate.x, translate.y);
 
-    gl.uniform1f(xMax, store.xMax + 0.001);
+    gl.uniform1f(xMax, store.X + 0.001);
 
     gl.uniform1i(uPicking, isPicking ? 1 : 0);
 

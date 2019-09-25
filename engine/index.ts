@@ -49,11 +49,22 @@ export default class MathRender {
      */
     needUpdated: boolean = false;
 
-    constructor(props: { Canvas: HTMLCanvasElement }) {
-        const { Canvas } = props;
+    constructor(props: { Canvas: HTMLCanvasElement, iWidth?: number, iHeight?: number }) {
+        const { Canvas, iWidth, iHeight } = props;
+        this.store = new Store();
+        if(iWidth && iHeight) {
+            this.store.setSize({
+                width: iWidth,
+                height: iHeight,
+            })
+        }
+
+        const { width, height } = this.store.getSize()
+        Canvas.width = width;
+        Canvas.height = height;
+
         const gl = Canvas.getContext('webgl');
 
-        this.store = new Store();
         initializePrograms(gl, this.map);
 
         gl.enable(gl.BLEND);
@@ -241,7 +252,7 @@ export default class MathRender {
                 const uConfig = gl.getUniformLocation(this.currentProgram, "u_Config");
                 const uTranslate = gl.getUniformLocation(this.currentProgram, 'u_Translate');
                 gl.uniform2f(resolution, size.width, size.height);
-                gl.uniform3f(uConfig, this.store.xStep, this.store.yStep, this.store.xMax);
+                gl.uniform3f(uConfig, this.store.xStep, this.store.yStep, this.store.X);
                 const translate = this.store.getTranslate();
                 gl.uniform2f(uTranslate, translate.x, translate.y);
                 gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);

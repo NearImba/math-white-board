@@ -6,7 +6,7 @@ const editor = new MathRender({
 
 editor.clear()
 
-const r = MathRender.loadData('[{"type":"Point","data":{"xy":{"x": 0, "y": 0}}}, {"type":"Point","data":{"xy":{"x": 0.3, "y": 0.5}}},{"type": "Equal", "data": "y = cos(x)"},{"type": "Equal", "data": "y = sin(x)"}, {"type": "Polygon", "data": [{"x": -0.3, "y": -0.2}, {"x": 0.2, "y": 0.3}, {"x": 0.6, "y": -0.5 }]}]')
+const r = MathRender.loadData('[{"type":"Point","data":{"xy":{"x": 0, "y": 0}}}, {"type":"Point","data":{"xy":{"x": 0.3, "y": 0.5}}},{"type": "Equal", "data": "y = tan(x)"},{"type": "Equal", "data": "y = sin(x)"}, {"type": "Polygon", "data": [{"x": -0.3, "y": -0.2}, {"x": 0.2, "y": 0.3}, {"x": 0.6, "y": -0.5 }]}]')
 
 function r1() {
     editor.render(r, false)

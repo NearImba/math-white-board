@@ -1,11 +1,13 @@
-export default class Store implements MStore {
+import { cw } from '../config'
+
+export default class Store {
     /**
      *
      * x 横坐标最大长度
      * @type {number}
      * @memberof Store
      */
-    xMax: number = 8.2;
+    private xMax: number = 5;
 
     /**
      * 
@@ -13,7 +15,7 @@ export default class Store implements MStore {
      * @type {number}
      * @memberof Store
      */
-    xStep: number = 1;
+    private xStep: number = 1;
 
     /**
      *
@@ -21,7 +23,7 @@ export default class Store implements MStore {
      * @type {number}
      * @memberof Store
      */
-    yStep: number = 1;
+    private yStep: number = 1;
 
     /**
      *
@@ -33,7 +35,7 @@ export default class Store implements MStore {
      *     }}
      * @memberof Store
      */
-    uniforms: {
+    private uniforms: {
         a: number,
         b: number,
         c: number,
@@ -53,7 +55,7 @@ export default class Store implements MStore {
      *     }}
      * @memberof Store
      */
-    translate: {
+    private translate: {
         x: number,
         y: number,
     } = {
@@ -70,17 +72,33 @@ export default class Store implements MStore {
      *     }}
      * @memberof Store
      */
-    size: {
+    private size: {
         width: number,
         height: number,
     } = {
-            width: 600,
-            height: 400,
+            width: 800,
+            height: 600,
         };
+
+    X: number;
+    
+    constructor() {
+        function warn() {
+            console.warn('you should never set this value directly');
+        }
+
+        Object.defineProperty(this, 'X', {
+            set: warn,
+            get: () => {
+                return this.xMax;
+            }
+        })
+    }
 
     setSize(size: { width?: number, height?: number }) {
         if (size.width) {
             this.size.width = size.width
+            this.xMax = parseFloat((size.width / cw).toFixed(2))
         }
 
         if (size.height) {
