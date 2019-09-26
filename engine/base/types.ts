@@ -14,4 +14,13 @@ enum Types {
     Straight = 'Straight', // 直线
     Coordinate = 'Coordinate' // 笛卡尔坐标系
 }
+
+export enum MathStageEventType {
+    Translate = 'TRANSLATE', // 整个视图移动
+    Scale = 'SCALE', // 整个视图缩放
+    Uniform = 'UNIFORM', // 全局参数变化
+    PtMove = 'PTMOVE', // 顶点以及相应object发生变化
+    Fullscreen = 'FULLSCREEN', // 全屏
+}
+
 export default Types;

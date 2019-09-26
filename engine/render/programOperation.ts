@@ -14,6 +14,7 @@ import polygonVs from './shader/polygon.vs'
 import polygonFs from './shader/polygon.fs'
 
 import { createWebGLProgram, createVertexShader, createFragmentShader } from './utils'
+
 import Store from '../store/index'
 
 /**
@@ -64,7 +65,7 @@ export function setGlobalUniforms(gl: WebGLRenderingContext, program: WebGLProgr
     gl.uniform2f(resolution, size.width, size.height);
 
     const translate = store.getTranslate();
-    gl.uniform2f(uTranslate, translate.x, translate.y);
+    gl.uniform2f(uTranslate, translate.x / store.X, translate.y / (store.X * store.AS));
 
     gl.uniform1f(xMax, store.X + 0.001);
 

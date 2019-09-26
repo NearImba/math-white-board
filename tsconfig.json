@@ -11,6 +11,7 @@
         "removeComments": true,
         "sourceMap": true,
         "target": "es2015",
-        "jsx": "react"
+        "jsx": "react",
+        "lib": ["dom", "es2015", "es2018.promise"]
     }
 }

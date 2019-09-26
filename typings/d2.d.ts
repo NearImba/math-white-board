@@ -48,3 +48,30 @@ declare module "*.fs" {
     const content: any;
     export default content;
 }
+
+declare module "*.svg" {
+    const content: any;
+    export default content;
+}
+
+declare module "*.less" {
+    const content: any;
+    export default content;
+}
+
+declare enum MathStageEventType {
+    Translate = 'TRANSLATE', // 整个视图移动
+    Scale = 'SCALE', // 整个视图缩放
+    Uniform = 'UNIFORM', // 全局参数变化
+    PtMove = 'PTMOVE', // 顶点以及相应object发生变化
+    Fullscreen = 'FULLSCREEN', // 全屏
+}
+
+declare interface MathStageEvent {
+    type: MathStageEventType,
+    data: any,
+}
+
+declare interface MathStage {
+    onReceiveEvent: Function,
+}

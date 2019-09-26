@@ -271,7 +271,7 @@ export default class MathRender {
                 gl.uniform2f(resolution, size.width, size.height);
                 gl.uniform3f(uConfig, this.store.xStep, this.store.yStep, this.store.X);
                 const translate = this.store.getTranslate();
-                gl.uniform2f(uTranslate, translate.x, translate.y);
+                gl.uniform2f(uTranslate, translate.x / this.store.X, translate.y / (this.store.X * this.store.AS));
                 gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
                 break;
             default:

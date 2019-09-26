@@ -56,13 +56,10 @@ export default class Store {
      *     }}
      * @memberof Store
      */
-    private translate: {
-        x: number,
-        y: number,
-    } = {
-            x: 0.3,
-            y: -0.2,
-        };
+    private translate: Vec2 = {
+        x: 0.5,
+        y: 0,
+    };
 
     /**
      *
@@ -140,7 +137,7 @@ export default class Store {
         };
     }
 
-    setTranslate(xy: { x: number, y: number }) {
+    setTranslate(xy: Vec2) {
         this.translate.x = xy.x;
         this.translate.y = xy.y;
     }

@@ -14,6 +14,7 @@ module.exports = merge(baseConfig, {
         contentBase: path.join(__dirname, '../dist'),
         publicPath: `/${appName}/`,
         port: 9000,
+        host: '0.0.0.0',
         proxy: {
             /* 代理在这 */
         },
