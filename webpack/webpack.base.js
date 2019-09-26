@@ -8,7 +8,7 @@ const appName = require('../package.json').name;
 
 module.exports = {
     entry: {
-        editor: './editor/index.ts',
+        editor: './editor/enter.tsx',
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
@@ -21,7 +21,7 @@ module.exports = {
     },
     module: {
         rules: [{
-            test: /\.tsx?$/,
+            test: /\.(ts|tsx)?$/,
             use: 'ts-loader',
             exclude: /node_modules/,
         }, {

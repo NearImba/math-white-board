@@ -9,13 +9,14 @@ export default class Store {
      */
     private xMax: number = 5;
 
+    private aspect: number = 1; // 高比宽，以宽为基准，跟普通的aspect不一样
     /**
      * 
      * x 坐标步长
      * @type {number}
      * @memberof Store
      */
-    private xStep: number = 1;
+    xStep: number = 1;
 
     /**
      *
@@ -23,7 +24,7 @@ export default class Store {
      * @type {number}
      * @memberof Store
      */
-    private yStep: number = 1;
+    yStep: number = 1;
 
     /**
      *
@@ -81,7 +82,9 @@ export default class Store {
         };
 
     X: number;
-    
+
+    AS: number; // 高比宽，以宽为基准，跟普通的aspect不一样
+
     constructor() {
         function warn() {
             console.warn('you should never set this value directly');
@@ -91,6 +94,13 @@ export default class Store {
             set: warn,
             get: () => {
                 return this.xMax;
+            }
+        })
+
+        Object.defineProperty(this, 'AS', {
+            set: warn,
+            get: () => {
+                return this.aspect;
             }
         })
     }
@@ -104,6 +114,9 @@ export default class Store {
         if (size.height) {
             this.size.height = size.height
         }
+
+        // 高比宽，以宽为基准，跟普通的aspect不一样
+        this.aspect = this.size.height / this.size.width;
     }
 
     getSize(): { width: number, height: number } {

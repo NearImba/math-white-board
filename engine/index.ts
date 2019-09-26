@@ -122,6 +122,16 @@ export default class MathRender {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
 
+    mathCoordToViewCoord(xy: Vec2): Vec2 {
+        const xMax = this.store.X;
+        const aspect = this.store.AS;
+        const yMax = xMax * aspect;
+        return {
+            x: xy.x / xMax,
+            y: xy.y / yMax
+        }
+    }
+
     /**
      *
      *
@@ -166,7 +176,8 @@ export default class MathRender {
 
         const fa: Array<Equal> = []
 
-        function addPointData(pt: Vec2, specifiedColor: Vec3, isSelected: boolean, tag: string) {
+        const addPointData = (mpt: Vec2, specifiedColor: Vec3, isSelected: boolean, tag: string) => {
+            const pt: Vec2 = this.mathCoordToViewCoord(mpt);
             p2.push(pt.x)
             p2.push(pt.y)
             p2.push(isSelected ? 0 : 1)
@@ -190,7 +201,9 @@ export default class MathRender {
             ]]
         }
 
-        function addLineData(p1: Vec2, p2: Vec2, specifiedColor: Vec3, isSelected: boolean) {
+        const addLineData = (mp1: Vec2, mp2: Vec2, specifiedColor: Vec3, isSelected: boolean) => {
+            const p1: Vec2 = this.mathCoordToViewCoord(mp1);
+            const p2: Vec2 = this.mathCoordToViewCoord(mp2);
             const m = p3.length / 9
             p3Index = [...p3Index, ...[0 + m, 1 + m, 2 + m, 0 + m, 2 + m, 3 + m]]
             for (let n = 0; n < 4; n++) {
@@ -198,12 +211,16 @@ export default class MathRender {
             }
         }
 
-        function addPolygonData(arr: Array<Vec2>, specifiedColor: Vec3, isSelected: boolean) {
+        const addPolygonData = (arr: Array<Vec2>, specifiedColor: Vec3, isSelected: boolean) => {
             if(arr.length > 2) {
                 polygonCount.push(arr.length)
                 const r7: Array<number> = []
                 arr.forEach(item => {
-                    r7.push(item.x, item.y, specifiedColor.x/ 255, specifiedColor.y / 255, specifiedColor.z / 255, isSelected ? 1: 0)
+                    const xy = this.mathCoordToViewCoord({
+                        x: item.x,
+                        y: item.y,
+                    })
+                    r7.push(xy.x, xy.y, specifiedColor.x/ 255, specifiedColor.y / 255, specifiedColor.z / 255, isSelected ? 1: 0)
                 })
     
                 p4 = [...p4, ...r7]

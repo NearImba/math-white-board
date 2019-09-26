@@ -110,7 +110,14 @@ export function getTextTexturePosition(str: string): Vec2 {
 export const ww = 56
 export const hh = 34
 
-export const transformIntToFloatInString = function (func:string = '') {
+/**
+ * 将字符串中的整型数，加上浮点
+ *
+ * @export
+ * @param {string} [func='']
+ * @returns
+ */
+export function transformIntToFloatInString (func:string = '') {
     // func 整形转浮点
     const reg = /(\d+)(\.?)(\d*)/g;
     const tfunc = func.replace(reg, (s) => {
