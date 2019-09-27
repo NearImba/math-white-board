@@ -72,6 +72,8 @@ export default class MathRender {
 
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
+        gl.getExtension('OES_standard_derivatives');
+
         this.gl = gl;
     }
 
@@ -180,7 +182,7 @@ export default class MathRender {
             const pt: Vec2 = this.mathCoordToViewCoord(mpt);
             p2.push(pt.x)
             p2.push(pt.y)
-            p2.push(isSelected ? 0 : 1)
+            p2.push(isSelected ? 1 : 0)
             p2.push(specifiedColor.x / 255);
             p2.push(specifiedColor.y / 255);
             p2.push(specifiedColor.z / 255);

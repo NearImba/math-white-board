@@ -51,6 +51,15 @@ module.exports = {
                 loader: 'sass-loader',
             }],
         }, {
+            test: /\.less$/,
+            use: [{
+                loader: 'style-loader',
+            }, {
+                loader: 'css-loader',
+            }, {
+                loader: 'less-loader',
+            }],
+        }, {
             test: /\.(png|jpg|gif)$/i,
             use: [
                 {
@@ -60,6 +69,9 @@ module.exports = {
                     },
                 },
             ],
+        }, {
+            test: /\.svg$/,
+            loader: 'svg-url-loader',
         }, {
             test: /\.(glsl|vs|fs)$/,
             loader: 'shader-loader',

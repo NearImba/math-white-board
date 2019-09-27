@@ -54,10 +54,7 @@ declare module "*.svg" {
     export default content;
 }
 
-declare module "*.less" {
-    const content: any;
-    export default content;
-}
+declare module "*.less";
 
 declare enum MathStageEventType {
     Translate = 'TRANSLATE', // 整个视图移动

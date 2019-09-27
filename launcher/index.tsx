@@ -7,26 +7,48 @@ import { cw } from '../engine/config'
 
 import { MathStageEventType } from '../engine/base/types'
 
+import './index.less'
+
 interface MathStageProps {
     width: number;
     height: number;
     file: string;
     onEventFired?: Function;
     ref: React.RefObject<MathStage>,
+    enableDrag?: boolean;
+    enableScale?: boolean;
+    enableFullscreen?: boolean;
+    enablePicking?: boolean;
 }
 
 interface MathStageStore {
     loading: boolean;
     error: boolean;
-    onReceive: Function;
+    fullscreen: boolean;
 }
 
 export default class MathStage extends React.Component<MathStageProps, MathStageStore> {
     Canvas = React.createRef<HTMLCanvasElement>();
     MR: MathRender;
     MoArray: Array<Mo>;
+    lastUpatedTime:number = 0;
+    timer: number;
+
+    static defaultProps = {
+        enableDrag: true,
+        enableScale: true,
+        enableFullscreen: true,
+        enablePicking: false,
+    }
+
+    state: MathStageStore = {
+        loading: false,
+        error: false,
+        fullscreen: false,
+    }
+
     componentDidMount() {
-        const { width, height, file } = this.props;
+        const { width, height, file, enableDrag } = this.props;
         this.MR = new MathRender({
             Canvas: this.Canvas.current,
             iWidth: width,
@@ -38,7 +60,9 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         this.loadData(file).then(data => {
             this.MoArray = MathRender.loadData(data as string)
             this.MR.render(this.MoArray)
-            this.initMoveEvent()
+            if(enableDrag) {
+                this.initDragEvent()
+            }
         }).catch(err => {
             console.log(err)
         }).finally(() => {
@@ -59,7 +83,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         })
     }
 
-    initMoveEvent = () => {
+    initDragEvent = () => {
         const { onEventFired = () => {} } = this.props
         const Canvas = this.Canvas.current;
         let start:Vec2 = {x:0, y:0}
@@ -69,8 +93,8 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         }
         const move = (e: any) => {
             let t = {
-                x: translate.x + (e.pageX - start.x) / cw,
-                y: translate.y - (e.pageY - start.y) / cw,
+                x: translate.x + (e.pageX - start.x) * 2 / cw,
+                y: translate.y - (e.pageY - start.y) * 2 / cw,
             }
         
             this.MR.store.setTranslate(t)
@@ -109,16 +133,33 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
     }
 
     updateView = () => {
-        requestAnimationFrame(() => {
-            this.MR.render(this.MoArray)
-        })
+        if(this.timer) {
+            clearTimeout(this.timer)
+        }
+        const t = Date.now() - this.lastUpatedTime
+        const MIN = 60
+        if(t >= MIN) {
+            requestAnimationFrame(() => {
+                this.MR.render(this.MoArray)
+            })
+            this.lastUpatedTime = Date.now()
+        } else {
+            this.timer = window.setTimeout(this.updateView, MIN - t)
+        }
     }
 
     render() {
-        const { width, height } = this.props;
-        return <div className="math-stage-instance">
-            <div className="loading" />
-            <div className="error" />
+        const { width, height, enableFullscreen, enableScale } = this.props;
+        const { loading, fullscreen, error } = this.state;
+        return <div style={{width: `${width}px`, height: `${height}px`}} className="math-stage-instance">
+            <div className={`loading ${loading ? '': 'hide'}`} />
+            <div className={`error ${error ? '': 'hide'}`} />
+            <div className="controls">
+                <button className={`zoom-in ${enableScale ? '': 'hide'}`} type="button">放大</button>
+                <button className={`zoom-out ${enableScale ? '': 'hide'}`} type="button">缩小</button>
+                <button className={`fullscreen ${!fullscreen && enableFullscreen ? 'hide': ''}`} type="button">全屏</button>
+                <button className={`unfullscreen ${fullscreen && enableFullscreen ? 'hide': ''}`} type="button">取消全屏</button>
+            </div>
             <canvas ref={this.Canvas} width={width} height={height} />
         </div>
     }
