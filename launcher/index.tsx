@@ -3,6 +3,10 @@ import * as React from 'react';
 import MathRender from '../engine/index'
 import Mo from '../engine/mos/mo';
 
+import Stepper from '../rc/stepper'
+
+import Types from '../engine/base/types'
+
 import { MathStageEventType } from '../engine/base/types'
 
 import './index.less'
@@ -30,6 +34,7 @@ interface MathStageStore {
     loading: boolean;
     error: boolean;
     fullscreen: boolean;
+    steppers: Array<{ name: string, max: number, min: number, value: number, step: number }>
 }
 
 const zoom = [80, 100, 160, 240, 320]
@@ -48,13 +53,14 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         enableFullscreen: true,
         enablePicking: false,
         quality: 'normal',
-        onEventFired: function () {}
+        onEventFired: function () { }
     }
 
     state: MathStageStore = {
         loading: false,
         error: false,
         fullscreen: false,
+        steppers: [],
     }
 
     componentDidMount() {
@@ -69,6 +75,17 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         })
         this.loadData(file).then(data => {
             this.MoArray = MathRender.loadData(data as string)
+            this.setState({
+                steppers: this.MoArray.filter(item => item.type === Types.Stepper).map(item => {
+                    return {
+                        name: item.data.name,
+                        max: item.data.max,
+                        min: item.data.min,
+                        value: item.data.value,
+                        step: item.data.step,
+                    }
+                })
+            })
             this.MR.render(this.MoArray)
             if (enableDrag) {
                 this.initDragEvent()
@@ -81,9 +98,9 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
             })
         })
 
-        if(enableFullscreen) {
+        if (enableFullscreen) {
             this.Container.current.addEventListener('fullscreenchange', (event: Event) => {
-                if(document.fullscreenElement) {
+                if (document.fullscreenElement) {
                     const { width, height } = window.screen
                     this.resize(width, height)
                 } else {
@@ -131,6 +148,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         const cancel = () => {
             Canvas.removeEventListener('mousemove', move)
             Canvas.removeEventListener('mouseup', cancel)
+            Canvas.removeEventListener('mouseleave', cancel)
         }
         Canvas.addEventListener('mousedown', (e) => {
             start = {
@@ -144,6 +162,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
             }
             Canvas.addEventListener('mousemove', move)
             Canvas.addEventListener('mouseup', cancel)
+            Canvas.addEventListener('mouseleave', cancel)
         })
     }
 
@@ -157,6 +176,9 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
                 this.MR.store.setCw(event.data)
                 this.updateView()
                 break;
+            case MathStageEventType.Uniform:
+                this.MR.store.setUniforms(event.data)
+                this.updateView()
         }
     }
 
@@ -215,7 +237,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
     zoomIn = () => {
         const cw = this.MR.store.CW;
         const index = zoom.indexOf(cw)
-        if(index < zoom.length - 1) {
+        if (index < zoom.length - 1) {
             const { onEventFired } = this.props
             onEventFired({
                 type: MathStageEventType.Scale,
@@ -229,7 +251,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
     zoomOut = () => {
         const cw = this.MR.store.CW;
         const index = zoom.indexOf(cw)
-        if(index > 0) {
+        if (index > 0) {
             const { onEventFired } = this.props
             this.MR.store.setCw(zoom[index - 1])
             onEventFired({
@@ -240,10 +262,23 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         }
     }
 
+    onStepperChange = (name:string, value: number) => {
+        const { onEventFired } = this.props
+        const info = {[name]: value}
+        this.MR.store.setUniforms(info)
+        onEventFired({
+            type: MathStageEventType.Uniform,
+            data: info
+        })
+        this.updateView()
+    }
+
     render() {
         const { width, height, enableFullscreen, enableScale } = this.props;
-        const { loading, fullscreen, error } = this.state;
+        const { loading, fullscreen, error, steppers } = this.state;
+        console.log(steppers)
         return <div ref={this.Container} style={{ width: `${width}px`, height: `${height}px` }} className="math-stage-instance">
+            <canvas ref={this.Canvas} width={width} height={height} />
             <div className={`loading ${loading ? '' : 'hide'}`} />
             <div className={`error ${error ? '' : 'hide'}`} />
             <div className="controls">
@@ -252,7 +287,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
                 <button className={`fullscreen ${!fullscreen && enableFullscreen ? '' : 'hide'}`} type="button" onClick={this.doFullscreen}>全屏</button>
                 <button className={`unfullscreen ${fullscreen && enableFullscreen ? '' : 'hide'}`} type="button" onClick={this.doUnfullscreen}>取消全屏</button>
             </div>
-            <canvas ref={this.Canvas} width={width} height={height} />
+            {steppers.map(st => <Stepper key={st.name} onChange={this.onStepperChange} {...st} />)}
         </div>
     }
 }

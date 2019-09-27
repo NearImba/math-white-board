@@ -4,6 +4,7 @@ import Mo from './mos/mo'
 import Point from './mos/point'
 import Equal from './mos/equal'
 import Line from './mos/line'
+import Stepper from './mos/stepper'
 
 import Types from './base/types'
 import { initializePrograms, setGlobalUniforms } from './render/programOperation'
@@ -99,6 +100,9 @@ export default class MathRender {
                         break;
                     case Types.Polygon:
                         result.push(new Polygon(item.data))
+                        break
+                    case Types.Stepper:
+                        result.push(new Stepper(item.data))
                         break
                     default:
                         console.warn(`${item.type} is not supported yet`)
@@ -259,6 +263,8 @@ export default class MathRender {
                     addLineData(polygon.data[polygon.data.length - 1], polygon.data[0], polygon.specifiedColor, polygon.isSelected)
                     addPolygonData(polygon.data, polygon.specifiedColor, polygon.isSelected,)
                     break
+                case Types.Stepper:
+                    break;
                 default:
                     console.warn(`${item.type} is not supported yet`)
                     break;

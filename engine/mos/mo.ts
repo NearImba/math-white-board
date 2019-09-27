@@ -9,7 +9,7 @@ export default class Mo {
     type: Types;
     isSelected: boolean = false;
     specifiedColor: Vec3;
-
+    data: any;
     constructor() {
         this.specifiedColor = {
             x: Math.floor(c / (65025)) % 255,

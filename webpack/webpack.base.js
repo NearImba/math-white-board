@@ -8,7 +8,8 @@ const appName = require('../package.json').name;
 
 module.exports = {
     entry: {
-        editor: './editor/enter.tsx',
+        editor: './editor/demo.tsx',
+        launcher: './launcher/index.tsx',
     },
     output: {
         path: path.resolve(__dirname, '../dist'),

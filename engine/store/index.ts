@@ -36,15 +36,17 @@ export default class Store {
      *     }}
      * @memberof Store
      */
-    private uniforms: {
-        a: number,
-        b: number,
-        c: number,
-    } = {
-            a: 0,
-            b: 0,
-            c: 0,
-        };
+    private uniforms: { [key: string]: number } = {
+        a: 1,
+        b: 2,
+        c: 1,
+        d: 1,
+        m: 1,
+        n: 1,
+        p: 1,
+        q: 1,
+        r: 1,
+    };
 
     /**
      *
@@ -161,5 +163,17 @@ export default class Store {
             x: this.translate.x,
             y: this.translate.y,
         }
+    }
+
+    setUniforms(data: { [key: string]: number}) {
+        for(let k in data) {
+            if(Object.prototype.hasOwnProperty.call(this.uniforms, k)) {
+                this.uniforms[k] = data[k]
+            }
+        }
+    }
+
+    getUniforms() {
+        return this.uniforms;
     }
 }

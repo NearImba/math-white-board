@@ -4,8 +4,27 @@
     border: 1px #cccccc solid;
     position: relative;
 
+    .fix {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    canvas {
+        .fix;
+    }
+
     .hide {
         display: none !important;
+    }
+
+    .stepper {
+        position: relative;
+        display: inline-block;
+
+        p {
+            text-align: center;
+        }
     }
 
     .controls {

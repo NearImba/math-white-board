@@ -1,12 +1,12 @@
 {
-  "name": "x-math",
+  "name": "math-stage-pro",
   "version": "1.0.0",
   "description": "react+webpack",
   "main": "app/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --hot --config ./webpack/webpack.dev.js",
-    "build-stable": "webpack --config ./webpack/webpack.build.js",
+    "build": "webpack --config ./webpack/webpack.build.js",
     "build-alpha": "webpack --config ./webpack/webpack.alpha.js"
   },
   "author": "NearImba",

@@ -33,9 +33,7 @@ uniform bool u_Selected;
 uniform bool u_Picking;
 uniform vec2 u_Translate;
 
-uniform float a;
-uniform float b;
-uniform float c;
+uniform mat3 u_P;
 
 varying vec4 v_Position;
 
@@ -45,10 +43,28 @@ float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 float left(float x, float y) {
+    float a = u_P[0][0];
+    float b = u_P[0][1];
+    float c = u_P[0][2];
+    float d = u_P[1][0];
+    float m = u_P[1][1];
+    float n = u_P[1][2];
+    float q = u_P[2][0];
+    float p = u_P[2][1];
+    float r = u_P[2][2];
     return ${left};
 }
 
 float right(float x, float y) {
+    float a = u_P[0][0];
+    float b = u_P[0][1];
+    float c = u_P[0][2];
+    float d = u_P[1][0];
+    float m = u_P[1][1];
+    float n = u_P[1][2];
+    float q = u_P[2][0];
+    float p = u_P[2][1];
+    float r = u_P[2][2];
     return ${right};
 }
 
@@ -120,6 +136,13 @@ export default function renderEquals(gl: WebGLRenderingContext, equals: Array<Eq
         setGlobalUniforms(gl, p, store, isPicking)
         const uSpecifiedColor = gl.getUniformLocation(p,'u_SpecifiedColor')
         gl.uniform3f(uSpecifiedColor, equal.specifiedColor.x / 255, equal.specifiedColor.y / 255, equal.specifiedColor.z / 255,)
+        const uniforms = gl.getUniformLocation(p, 'u_P');
+        const u = store.getUniforms()
+        const ua: Array<number> = []
+        for(let k in u) {
+            ua.push(u[k])
+        }
+        gl.uniformMatrix3fv(uniforms, false, ua);
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4)
     })
 }
