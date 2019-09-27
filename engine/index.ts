@@ -41,6 +41,8 @@ export default class MathRender {
 
     map: Map<string, WebGLProgram> = new Map();
 
+    Canvas: HTMLCanvasElement;
+
     /**
      *
      * 需要刷新
@@ -52,18 +54,15 @@ export default class MathRender {
     constructor(props: { Canvas: HTMLCanvasElement, iWidth?: number, iHeight?: number }) {
         const { Canvas, iWidth, iHeight } = props;
         this.store = new Store();
-        if(iWidth && iHeight) {
-            this.store.setSize({
-                width: iWidth,
-                height: iHeight,
-            })
-        }
-
-        const { width, height } = this.store.getSize()
-        Canvas.width = width;
-        Canvas.height = height;
-
         const gl = Canvas.getContext('webgl');
+        this.gl = gl;
+        this.Canvas = Canvas;
+        if(iWidth && iHeight) {
+            this.resize(iWidth, iHeight)
+        } else {
+            console.error('iWidth, iHeight must be specified!')
+            return
+        }
 
         initializePrograms(gl, this.map);
 
@@ -74,7 +73,7 @@ export default class MathRender {
 
         gl.getExtension('OES_standard_derivatives');
 
-        this.gl = gl;
+        
     }
 
     /**
@@ -134,6 +133,13 @@ export default class MathRender {
         }
     }
 
+    resize(width: number, height: number) {
+        this.store.setSize({width, height})
+        this.Canvas.width = width;
+        this.Canvas.height = height;
+        this.gl.viewport(0, 0, width, height);
+    }
+
     /**
      *
      *
@@ -148,7 +154,7 @@ export default class MathRender {
 
         const gl = this.gl;
 
-        const { width, height } = this.store.getSize()
+        const { width, height } = this.store.getSize() 
 
         const vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);

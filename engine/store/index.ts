@@ -1,5 +1,3 @@
-import { cw } from '../config'
-
 export default class Store {
     /**
      *
@@ -8,6 +6,8 @@ export default class Store {
      * @memberof Store
      */
     private xMax: number = 5;
+
+    private cw: number = 100;
 
     private aspect: number = 1; // 高比宽，以宽为基准，跟普通的aspect不一样
     /**
@@ -82,6 +82,8 @@ export default class Store {
 
     AS: number; // 高比宽，以宽为基准，跟普通的aspect不一样
 
+    CW: number;
+
     constructor() {
         function warn() {
             console.warn('you should never set this value directly');
@@ -91,6 +93,13 @@ export default class Store {
             set: warn,
             get: () => {
                 return this.xMax;
+            }
+        })
+
+        Object.defineProperty(this, 'CW', {
+            set: warn,
+            get: () => {
+                return this.cw;
             }
         })
 
@@ -105,7 +114,7 @@ export default class Store {
     setSize(size: { width?: number, height?: number }) {
         if (size.width) {
             this.size.width = size.width
-            this.xMax = parseFloat((size.width / cw).toFixed(2))
+            this.xMax = parseFloat((size.width / this.cw).toFixed(2))
         }
 
         if (size.height) {
@@ -114,6 +123,11 @@ export default class Store {
 
         // 高比宽，以宽为基准，跟普通的aspect不一样
         this.aspect = this.size.height / this.size.width;
+    }
+
+    setCw(cw: number) {
+        this.cw = cw;
+        this.xMax = parseFloat((this.size.width / this.cw).toFixed(2))
     }
 
     getSize(): { width: number, height: number } {
