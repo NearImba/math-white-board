@@ -8,6 +8,8 @@ interface StepperData {
     min: number,
     value: number,
     step: number,
+    top?: string,
+    left?: string,
 }
 
 export default class Stepper extends Mo {

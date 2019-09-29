@@ -3,6 +3,8 @@
 .math-stage-instance {
     border: 1px #cccccc solid;
     position: relative;
+    user-select: none;
+    -webkit-user-select: none;
 
     .fix {
         position: absolute;
@@ -19,11 +21,35 @@
     }
 
     .stepper {
-        position: relative;
+        position: absolute;
         display: inline-block;
 
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 120px;
+            border-radius: 10px;
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            margin-top: -8px; /*使滑块超出轨道部分的偏移量相等*/
+            background: #ffffff; 
+            border-radius: 50%; /*外观设置为圆形*/
+            border: solid 1px rgba(205, 224, 230, 0.5); /*设置边框*/
+            box-shadow: 0 1px 1px #3b4547; /*添加底部阴影*/
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 4px;
+            border-radius: 2px;
+            background-color: #cccccc; 
+        }
+
         p {
+            transform: translateY(6px);
             text-align: center;
+            font-size: 12px;
         }
     }
 

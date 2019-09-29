@@ -58,7 +58,7 @@ export default class MathRender {
         const gl = Canvas.getContext('webgl');
         this.gl = gl;
         this.Canvas = Canvas;
-        if(iWidth && iHeight) {
+        if (iWidth && iHeight) {
             this.resize(iWidth, iHeight)
         } else {
             console.error('iWidth, iHeight must be specified!')
@@ -74,7 +74,7 @@ export default class MathRender {
 
         gl.getExtension('OES_standard_derivatives');
 
-        
+
     }
 
     /**
@@ -83,36 +83,30 @@ export default class MathRender {
      * @param {string} file
      * @memberof MathRender
      */
-    static loadData(file: string): Array<Mo> {
+    static loadData(arr: Array<{type: Types, data: any}>): Array<Mo> {
         const result: Array<Mo> = [];
-        try {
-            const arr = JSON.parse(file);
-            arr.forEach((item: { type: Types; data: any }) => {
-                switch (item.type) {
-                    case Types.Point:
-                        result.push(new Point({ ...item.data }))
-                        break;
-                    case Types.Equal:
-                        result.push(new Equal(item.data))
-                        break;
-                    case Types.Line:
-                        result.push(new Line(item.data))
-                        break;
-                    case Types.Polygon:
-                        result.push(new Polygon(item.data))
-                        break
-                    case Types.Stepper:
-                        result.push(new Stepper(item.data))
-                        break
-                    default:
-                        console.warn(`${item.type} is not supported yet`)
-                        break;
-                }
-            })
-        } catch (e) {
-            console.error(e)
-            console.info('file broken')
-        }
+        arr.forEach((item: { type: Types; data: any }) => {
+            switch (item.type) {
+                case Types.Point:
+                    result.push(new Point({ ...item.data }))
+                    break;
+                case Types.Equal:
+                    result.push(new Equal(item.data))
+                    break;
+                case Types.Line:
+                    result.push(new Line(item.data))
+                    break;
+                case Types.Polygon:
+                    result.push(new Polygon(item.data))
+                    break
+                case Types.Stepper:
+                    result.push(new Stepper(item.data))
+                    break
+                default:
+                    console.warn(`${item.type} is not supported yet`)
+                    break;
+            }
+        })
         return result;
     }
 
@@ -138,7 +132,7 @@ export default class MathRender {
     }
 
     resize(width: number, height: number) {
-        this.store.setSize({width, height})
+        this.store.setSize({ width, height })
         this.Canvas.width = width;
         this.Canvas.height = height;
         this.gl.viewport(0, 0, width, height);
@@ -158,7 +152,7 @@ export default class MathRender {
 
         const gl = this.gl;
 
-        const { width, height } = this.store.getSize() 
+        const { width, height } = this.store.getSize()
 
         const vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -219,12 +213,12 @@ export default class MathRender {
             const m = p3.length / 9
             p3Index = [...p3Index, ...[0 + m, 1 + m, 2 + m, 0 + m, 2 + m, 3 + m]]
             for (let n = 0; n < 4; n++) {
-                p3 = [...p3, ...[p1.x, p1.y, p2.x, p2.y, specifiedColor.x / 255, specifiedColor.y / 255, specifiedColor.x / 255, n, isSelected ? 1.0: 0.0]]
+                p3 = [...p3, ...[p1.x, p1.y, p2.x, p2.y, specifiedColor.x / 255, specifiedColor.y / 255, specifiedColor.x / 255, n, isSelected ? 1.0 : 0.0]]
             }
         }
 
         const addPolygonData = (arr: Array<Vec2>, specifiedColor: Vec3, isSelected: boolean) => {
-            if(arr.length > 2) {
+            if (arr.length > 2) {
                 polygonCount.push(arr.length)
                 const r7: Array<number> = []
                 arr.forEach(item => {
@@ -232,11 +226,11 @@ export default class MathRender {
                         x: item.x,
                         y: item.y,
                     })
-                    r7.push(xy.x, xy.y, specifiedColor.x/ 255, specifiedColor.y / 255, specifiedColor.z / 255, isSelected ? 1: 0)
+                    r7.push(xy.x, xy.y, specifiedColor.x / 255, specifiedColor.y / 255, specifiedColor.z / 255, isSelected ? 1 : 0)
                 })
-    
+
                 p4 = [...p4, ...r7]
-            }     
+            }
         }
 
         MoArray.forEach((item: Mo) => {
@@ -254,14 +248,14 @@ export default class MathRender {
                     break
                 case Types.Polygon:
                     const polygon = item as Polygon
-                    for(let n = 0; n < polygon.data.length; n++) {
+                    for (let n = 0; n < polygon.data.length; n++) {
                         addPointData(polygon.data[n], polygon.specifiedColor, polygon.isSelected, '')
-                        if(n < polygon.data.length - 1) {
+                        if (n < polygon.data.length - 1) {
                             addLineData(polygon.data[n], polygon.data[n + 1], polygon.specifiedColor, polygon.isSelected)
                         }
                     }
                     addLineData(polygon.data[polygon.data.length - 1], polygon.data[0], polygon.specifiedColor, polygon.isSelected)
-                    addPolygonData(polygon.data, polygon.specifiedColor, polygon.isSelected,)
+                    addPolygonData(polygon.data, polygon.specifiedColor, polygon.isSelected)
                     break
                 case Types.Stepper:
                     break;
@@ -296,7 +290,7 @@ export default class MathRender {
         renderEquals(gl, fa, this.store, isPicking)
 
         // 绘制所有线段
-        if(p3.length > 0) {
+        if (p3.length > 0) {
             this.switchProgram(this.map.get('line'))
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(p3), gl.STATIC_DRAW);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(p3Index), gl.STATIC_DRAW);
@@ -305,7 +299,7 @@ export default class MathRender {
         }
 
         // 绘制所有面
-        if(p4.length > 0) {
+        if (p4.length > 0) {
             this.switchProgram(this.map.get('polygon'))
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(p4), gl.STATIC_DRAW);
             setGlobalUniforms(this.gl, this.currentProgram, this.store, isPicking)
@@ -313,7 +307,7 @@ export default class MathRender {
         }
 
         // 绘制所有顶点
-        if(p2.length > 0) {
+        if (p2.length > 0) {
             this.switchProgram(this.map.get('point'))
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(p2), gl.STATIC_DRAW);
             setGlobalUniforms(this.gl, this.currentProgram, this.store, isPicking)
@@ -321,7 +315,7 @@ export default class MathRender {
         }
 
         // 绘制顶顶点标示
-        if(p5.length > 0) {
+        if (p5.length > 0) {
             this.switchProgram(this.map.get('ptext'))
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(p5), gl.STATIC_DRAW);
             setGlobalUniforms(this.gl, this.currentProgram, this.store, isPicking)
@@ -330,9 +324,7 @@ export default class MathRender {
     }
 
     switchProgram(program: WebGLProgram) {
-        if (program !== this.currentProgram) {
-            this.currentProgram = program;
-            this.gl.useProgram(this.currentProgram);
-        }
+        this.currentProgram = program;
+        this.gl.useProgram(this.currentProgram);
     }
 }

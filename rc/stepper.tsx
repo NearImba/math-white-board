@@ -18,6 +18,11 @@ export default class Stepper extends React.Component<StepperProps> {
         value: this.props.value,
     }
 
+    static defaultProps = {
+        top: '0',
+        left: '0',
+    }
+
     onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         if(value) {
@@ -28,14 +33,16 @@ export default class Stepper extends React.Component<StepperProps> {
                     this.props.onChange(this.props.name, value)
                 }
             })
-        }
-        
+        }      
+    }
+
+    computedStyle = () => {
     }
 
     render() {
-        const { max, min, step, name } = this.props
+        const { max, min, step, name, top, left } = this.props
         const { value } = this.state
-        return <div className="stepper">
+        return <div className="stepper" style={{ transform: `translate(${left}, ${top})`}}>
             <p>
                 {name} = {value}
             </p>

@@ -74,7 +74,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
             loading: true,
         })
         this.loadData(file).then(data => {
-            this.MoArray = MathRender.loadData(data as string)
+            this.MoArray = MathRender.loadData(data.elements)
             this.setState({
                 steppers: this.MoArray.filter(item => item.type === Types.Stepper).map(item => {
                     return {
@@ -83,6 +83,8 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
                         min: item.data.min,
                         value: item.data.value,
                         step: item.data.step,
+                        top: item.data.top ? item.data.top : '0',
+                        left: item.data.left ? item.data.left : '0',
                     }
                 })
             })
@@ -112,16 +114,13 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         }
     }
 
-    loadData = (url: string): Promise<string | { errMsg: string }> => {
-        const { file } = this.props;
-        return new Promise((resolve, reject) => {
-            resolve(file);
-            // if (Math.random() > 0.07) {
-            //     resolve(file);
-            // } else {
-            //     reject('文件加载失败')
-            // }
+    loadData = (url: string): Promise<{elements: Array<{data: any, type: Types}>}> => {
+        return fetch(url).then(res => res.text()).then(str => {
+            return JSON.parse(decodeURIComponent(atob(str)))
+        }).catch(err => {
+            throw err
         })
+
     }
 
     initDragEvent = () => {
@@ -262,9 +261,9 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         }
     }
 
-    onStepperChange = (name:string, value: number) => {
+    onStepperChange = (name: string, value: number) => {
         const { onEventFired } = this.props
-        const info = {[name]: value}
+        const info = { [name]: value }
         this.MR.store.setUniforms(info)
         onEventFired({
             type: MathStageEventType.Uniform,
@@ -276,7 +275,6 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
     render() {
         const { width, height, enableFullscreen, enableScale } = this.props;
         const { loading, fullscreen, error, steppers } = this.state;
-        console.log(steppers)
         return <div ref={this.Container} style={{ width: `${width}px`, height: `${height}px` }} className="math-stage-instance">
             <canvas ref={this.Canvas} width={width} height={height} />
             <div className={`loading ${loading ? '' : 'hide'}`} />
