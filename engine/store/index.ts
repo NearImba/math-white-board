@@ -61,8 +61,8 @@ export default class Store {
      * @memberof Store
      */
     private translate: Vec2 = {
-        x: 0.5,
-        y: 0.5,
+        x: 0,
+        y: 0,
     };
 
     /**

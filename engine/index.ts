@@ -75,8 +75,6 @@ export default class MathRender {
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
         gl.getExtension('OES_standard_derivatives');
-
-
     }
 
     /**
@@ -277,6 +275,7 @@ export default class MathRender {
         renderCoordinate(gl, this.background, this.store, this.map)
 
         // 绘制所有函数
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(p1), gl.STATIC_DRAW);
         renderEquals(gl, fa, this.store, isPicking)
 
         // 绘制所有线段

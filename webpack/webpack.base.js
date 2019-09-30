@@ -10,6 +10,7 @@ module.exports = {
     entry: {
         editor: './editor/demo.tsx',
         launcher: './launcher/index.tsx',
+        single: './editor/index.tsx',
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
@@ -88,6 +89,15 @@ module.exports = {
             template: './editor/index.html',
             filename: 'editor.html',
             chunks: ['editor'],
+            minify: {
+                minifyCSS: true,
+                minifyJS: true,
+            },
+        }),
+        new HtmlWebpackPlugin({
+            template: './editor/index.html',
+            filename: 'single.html',
+            chunks: ['single'],
             minify: {
                 minifyCSS: true,
                 minifyJS: true,

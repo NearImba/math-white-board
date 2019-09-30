@@ -4,6 +4,8 @@ import { createWebGLProgram, createVertexShader, createFragmentShader, transform
 
 import { setGlobalUniforms } from '../programOperation'
 
+const SIZE = Float32Array.BYTES_PER_ELEMENT;
+
 const instances: Map<WebGLRenderingContext, Map<string,WebGLProgram>> = new Map()
 
 const vs = `
@@ -134,6 +136,9 @@ export default function renderEquals(gl: WebGLRenderingContext, equals: Array<Eq
         const p = ps.get(equal.data)
         gl.useProgram(p)
         setGlobalUniforms(gl, p, store, isPicking)
+        const aPosition2 = gl.getAttribLocation(p, "a_Position");
+        gl.vertexAttribPointer(aPosition2, 2, gl.FLOAT, false, SIZE * 2, 0);
+        gl.enableVertexAttribArray(aPosition2)
         const uSpecifiedColor = gl.getUniformLocation(p,'u_SpecifiedColor')
         gl.uniform3f(uSpecifiedColor, equal.specifiedColor.x / 255, equal.specifiedColor.y / 255, equal.specifiedColor.z / 255,)
         const uniforms = gl.getUniformLocation(p, 'u_P');

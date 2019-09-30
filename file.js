@@ -12,10 +12,10 @@ const file = {
     }, {
         type: "Stepper",
         data: {
-            min: 0,
-            max: 3,
+            min: -5,
+            max: 5,
             value: 1,
-            step: 1,
+            step: 0.5,
             name: "a",
             left: "8px",
         },
@@ -23,8 +23,8 @@ const file = {
     {
         type: "Stepper",
         data: {
-            min: -2,
-            max: 3,
+            min: -5,
+            max: 5,
             value: 1,
             step: 0.2,
             name: "b",
@@ -35,10 +35,10 @@ const file = {
     {
         type: "Stepper",
         data: {
-            min: -3,
-            max: 3,
+            min: -5,
+            max: 5,
             value: 1,
-            step: 0.5,
+            step: 0.2,
             name: "c",
             top: '86px',
             left: "8px",
@@ -47,14 +47,14 @@ const file = {
         type: "Latex",
         data: {
             text: "y = \\text{a} x^2 + \\text{b} x + c",
-            top: '86px',
-            left: "308px",
+            top: '10px',
+            left: "608px",
         },
     }, {
         type: "Latex",
         data: {
             text: "y = -\\text{a} x^2 + \\text{b} x - c",
-            top: '316px',
+            top: '38px',
             left: "608px",
         },
     }],

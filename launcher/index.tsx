@@ -25,7 +25,7 @@ interface MathStageProps {
     height: number;
     file: string;
     onEventFired?: Function;
-    ref: React.RefObject<MathStage>,
+    ref?: React.RefObject<MathStage>,
     enableDrag?: boolean;
     enableScale?: boolean;
     enableFullscreen?: boolean;
