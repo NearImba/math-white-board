@@ -36,7 +36,8 @@ declare enum Types {
     Stepper = 'Stepper', // 步进器
     Angle = 'Angle', // 角度
     Straight = 'Straight', // 直线
-    Coordinate = 'Coordinate' // 笛卡尔坐标系
+    Coordinate = 'Coordinate', // 笛卡尔坐标系
+    Latex = 'Latex',
 }
 
 declare module "*.vs" {
@@ -71,4 +72,8 @@ declare interface MathStageEvent {
 
 declare interface MathStage {
     onReceiveEvent: Function,
+}
+
+declare interface Window {
+    katex: any,
 }

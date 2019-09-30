@@ -12,9 +12,9 @@ const file = {
     }, {
         type: "Stepper",
         data: {
-            min: -3,
+            min: 0,
             max: 3,
-            value: 0.5,
+            value: 1,
             step: 1,
             name: "a",
             left: "8px",
@@ -25,10 +25,10 @@ const file = {
         data: {
             min: -2,
             max: 3,
-            value: 0.5,
+            value: 1,
             step: 0.2,
             name: "b",
-            top: '40px',
+            top: '43px',
             left: "8px",
         },
     },
@@ -37,11 +37,25 @@ const file = {
         data: {
             min: -3,
             max: 3,
-            value: 0.5,
+            value: 1,
             step: 0.5,
             name: "c",
-            top: '80px',
+            top: '86px',
             left: "8px",
+        },
+    }, {
+        type: "Latex",
+        data: {
+            text: "y = \\text{a} x^2 + \\text{b} x + c",
+            top: '86px',
+            left: "308px",
+        },
+    }, {
+        type: "Latex",
+        data: {
+            text: "y = -\\text{a} x^2 + \\text{b} x - c",
+            top: '316px',
+            left: "608px",
         },
     }],
 };
@@ -50,7 +64,7 @@ function encode(str) {
     return (Buffer.from(encodeURIComponent(str))).toString('base64');
 }
 
-fs.writeFile('courseware-1.txt', encode(JSON.stringify(file)), 'utf-8', (err) => {
+fs.writeFile('./dist/courseware-1.txt', encode(JSON.stringify(file)), 'utf-8', (err) => {
     if (err) {
         console.error(err);
         return;

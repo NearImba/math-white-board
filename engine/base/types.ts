@@ -12,7 +12,8 @@ enum Types {
     Stepper = 'Stepper', // 步进器
     Angle = 'Angle', // 角度
     Straight = 'Straight', // 直线
-    Coordinate = 'Coordinate' // 笛卡尔坐标系
+    Coordinate = 'Coordinate', // 笛卡尔坐标系
+    Latex = 'Latex',
 }
 
 export enum MathStageEventType {

@@ -4,10 +4,13 @@ import MathRender from '../engine/index'
 import Mo from '../engine/mos/mo';
 
 import Stepper from '../rc/stepper'
+import Latex from '../rc/latex'
 
 import Types from '../engine/base/types'
 
 import { MathStageEventType } from '../engine/base/types'
+
+import { steps } from '../engine/config'
 
 import './index.less'
 
@@ -34,10 +37,10 @@ interface MathStageStore {
     loading: boolean;
     error: boolean;
     fullscreen: boolean;
-    steppers: Array<{ name: string, max: number, min: number, value: number, step: number }>
+    steppers: Array<{ name: string, max: number, min: number, value: number, step: number }>,
+    latexs: Array<{ text: string, }>,
+    zoomIndex: number,
 }
-
-const zoom = [80, 100, 160, 240, 320]
 
 export default class MathStage extends React.Component<MathStageProps, MathStageStore> {
     Canvas = React.createRef<HTMLCanvasElement>();
@@ -61,6 +64,8 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         error: false,
         fullscreen: false,
         steppers: [],
+        latexs: [],
+        zoomIndex: 2,
     }
 
     componentDidMount() {
@@ -88,7 +93,17 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
                     }
                 })
             })
+            this.setState({
+                latexs: this.MoArray.filter(item => item.type === Types.Latex).map(item => {
+                    return {
+                        text: item.data.text,
+                        top: item.data.top ? item.data.top : '0',
+                        left: item.data.left ? item.data.left : '0',
+                    }
+                })
+            })
             this.MR.render(this.MoArray)
+            console.log(this.MoArray)
             if (enableDrag) {
                 this.initDragEvent()
             }
@@ -132,7 +147,9 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
             y: 0
         }
         const move = (e: any) => {
-            const cw = this.MR.store.CW;
+            const { width } = this.props;
+            const { fullscreen } = this.state;
+            const cw = (fullscreen ? window.innerWidth : width) / this.MR.store.X;
             let t = {
                 x: translate.x + (e.pageX - start.x) * 2 / cw,
                 y: translate.y - (e.pageY - start.y) * 2 / cw,
@@ -172,7 +189,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
                 this.updateView()
                 break;
             case MathStageEventType.Scale:
-                this.MR.store.setCw(event.data)
+                this.MR.store.setZoomIndex(event.data)
                 this.updateView()
                 break;
             case MathStageEventType.Uniform:
@@ -233,31 +250,37 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         this.updateView()
     }
 
-    zoomIn = () => {
-        const cw = this.MR.store.CW;
-        const index = zoom.indexOf(cw)
-        if (index < zoom.length - 1) {
+    zoomOut = () => {
+        const { zoomIndex } = this.state
+        if (zoomIndex < steps.length - 1) {
+            const nextZoomIndex = zoomIndex + 1;
             const { onEventFired } = this.props
             onEventFired({
                 type: MathStageEventType.Scale,
-                data: zoom[index + 1]
+                data: nextZoomIndex,
             })
-            this.MR.store.setCw(zoom[index + 1])
+            this.MR.store.setZoomIndex(nextZoomIndex)
             this.updateView()
+            this.setState({
+                zoomIndex: nextZoomIndex
+            })
         }
     }
 
-    zoomOut = () => {
-        const cw = this.MR.store.CW;
-        const index = zoom.indexOf(cw)
-        if (index > 0) {
+    zoomIn = () => {
+        const { zoomIndex } = this.state
+        if (zoomIndex > 0) {
+            const nextZoomIndex = zoomIndex - 1;
             const { onEventFired } = this.props
-            this.MR.store.setCw(zoom[index - 1])
             onEventFired({
                 type: MathStageEventType.Scale,
-                data: zoom[index - 1]
+                data: nextZoomIndex,
             })
+            this.MR.store.setZoomIndex(nextZoomIndex)
             this.updateView()
+            this.setState({
+                zoomIndex: nextZoomIndex
+            })
         }
     }
 
@@ -274,7 +297,8 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
 
     render() {
         const { width, height, enableFullscreen, enableScale } = this.props;
-        const { loading, fullscreen, error, steppers } = this.state;
+        const { loading, fullscreen, error, steppers, latexs } = this.state;
+        console.log(latexs)
         return <div ref={this.Container} style={{ width: `${width}px`, height: `${height}px` }} className="math-stage-instance">
             <canvas ref={this.Canvas} width={width} height={height} />
             <div className={`loading ${loading ? '' : 'hide'}`} />
@@ -286,6 +310,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
                 <button className={`unfullscreen ${fullscreen && enableFullscreen ? '' : 'hide'}`} type="button" onClick={this.doUnfullscreen}>取消全屏</button>
             </div>
             {steppers.map(st => <Stepper key={st.name} onChange={this.onStepperChange} {...st} />)}
+            {latexs.map(st => <Latex key={st.text} {...st} />)}
         </div>
     }
 }

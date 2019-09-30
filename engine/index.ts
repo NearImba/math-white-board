@@ -5,12 +5,14 @@ import Point from './mos/point'
 import Equal from './mos/equal'
 import Line from './mos/line'
 import Stepper from './mos/stepper'
+import Latex from './mos/latex'
 
 import Types from './base/types'
 import { initializePrograms, setGlobalUniforms } from './render/programOperation'
 
 import { getTextTexturePosition, tags, ww, hh, createWebGLProgram, createVertexShader, createFragmentShader } from './render/utils'
 
+import renderCoordinate from './render/pass/coordinate'
 import renderPoints from './render/pass/point'
 import renderPointTexts from './render/pass/pText'
 import renderEquals from './render/pass/equal'
@@ -102,6 +104,9 @@ export default class MathRender {
                 case Types.Stepper:
                     result.push(new Stepper(item.data))
                     break
+                case Types.Latex:
+                    result.push(new Latex(item.data))
+                    break;
                 default:
                     console.warn(`${item.type} is not supported yet`)
                     break;
@@ -257,6 +262,7 @@ export default class MathRender {
                     addLineData(polygon.data[polygon.data.length - 1], polygon.data[0], polygon.specifiedColor, polygon.isSelected)
                     addPolygonData(polygon.data, polygon.specifiedColor, polygon.isSelected)
                     break
+                case Types.Latex:
                 case Types.Stepper:
                     break;
                 default:
@@ -266,25 +272,9 @@ export default class MathRender {
         })
 
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(p1), gl.STATIC_DRAW);
+        
         // 绘制背景
-        switch (this.background) {
-            case Types.Coordinate:
-                this.switchProgram(this.map.get('coordinate'))
-                const aPosition2 = gl.getAttribLocation(this.currentProgram, "a_Position");
-                gl.vertexAttribPointer(aPosition2, 2, gl.FLOAT, false, SIZE * 2, 0);
-                gl.enableVertexAttribArray(aPosition2)
-                const resolution = gl.getUniformLocation(this.currentProgram, "u_Resolution");
-                const uConfig = gl.getUniformLocation(this.currentProgram, "u_Config");
-                const uTranslate = gl.getUniformLocation(this.currentProgram, 'u_Translate');
-                gl.uniform2f(resolution, size.width, size.height);
-                gl.uniform3f(uConfig, this.store.xStep, this.store.yStep, this.store.X);
-                const translate = this.store.getTranslate();
-                gl.uniform2f(uTranslate, translate.x / this.store.X, translate.y / (this.store.X * this.store.AS));
-                gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-                break;
-            default:
-                break;
-        }
+        renderCoordinate(gl, this.background, this.store, this.map)
 
         // 绘制所有函数
         renderEquals(gl, fa, this.store, isPicking)
