@@ -1,5 +1,4 @@
-import { steps } from '../config'
-const renderSafeSpacing = [180, 260];
+import { steps, renderSafeSpacing } from '../config'
 
 export default class Store {
     /**
@@ -11,8 +10,6 @@ export default class Store {
     private xMax: number = 5;
 
     private stepIndex: number = 2;
-
-    private n: number = 0; // 最多多少根线
 
     private aspect: number = 1; // 高比宽，以宽为基准，跟普通的aspect不一样
     /**
@@ -64,8 +61,8 @@ export default class Store {
      * @memberof Store
      */
     private translate: Vec2 = {
-        x: 0.0,
-        y: 0,
+        x: 0.5,
+        y: 0.5,
     };
 
     /**
@@ -89,7 +86,7 @@ export default class Store {
 
     AS: number; // 高比宽，以宽为基准，跟普通的aspect不一样
 
-    N: number;
+    SI: number;
 
     constructor() {
         function warn() {
@@ -110,10 +107,10 @@ export default class Store {
             }
         })
 
-        Object.defineProperty(this, 'N', {
+        Object.defineProperty(this, 'SI', {
             set: warn,
             get: () => {
-                return this.n;
+                return this.stepIndex;
             }
         })
     }
@@ -129,14 +126,13 @@ export default class Store {
 
         // 高比宽，以宽为基准，跟普通的aspect不一样
         this.aspect = this.size.height / this.size.width;
-        this.n = Math.floor(this.size.width / renderSafeSpacing[this.stepIndex % 2]);
+
         this.xMax = this.size.width * 0.5 / renderSafeSpacing[this.stepIndex % 2] * steps[this.stepIndex];
     }
 
     setZoomIndex(n: number) {
         if(steps[n]) {
             this.stepIndex = n;
-            this.n = Math.floor(this.size.width / renderSafeSpacing[this.stepIndex % 2]);
             this.xMax = this.size.width * 0.5 / renderSafeSpacing[this.stepIndex % 2] * steps[this.stepIndex];
         } else {
             console.error('zoom index out of range')

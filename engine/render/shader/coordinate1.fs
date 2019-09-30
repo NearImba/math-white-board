@@ -15,32 +15,34 @@ vec4 blockColor = vec4(1.0, 0.0, 0.0, 1.0);
 
 void main() {
     float aspect = u_Config.y;
-    float n = u_Config.x;
-    vec2 pt = gl_FragCoord.xy / u_Resolution.xy -.5 - u_Translate * 0.5;
+    float step = u_Config.x;
+    // vec2 pt = (gl_FragCoord.xy - 0.5) / u_Resolution.xy -.5 - u_Translate * 0.5;
     // vec2 pt = v_Position.xy - u_Translate;
-    pt.y *= aspect;
+
+    vec2 pt = (gl_FragCoord.xy - 0.5) - u_Resolution * 0.5;
+    vec2 translate = vec2(u_Translate.x * u_Resolution.x * 0.5, u_Translate.y * u_Resolution.y * 0.5);
+    pt -= translate;
 
     gl_FragColor = bgColor;
 
-    // vec2 p2 = fract(fract(pt) * 10.0);
-    // if(any(greaterThan(p2, vec2(0.9)))) {
-    //     gl_FragColor = blockColor * smoothstep(0.9, 1.0, max(p2.x, p2.y));
-    // }
+    vec2 pc = abs(pt);
 
-    float w = 0.008;
-    vec2 p = fract(pt * n);   
-    if(any(greaterThan(p, vec2(1.0 - w))) || any(lessThan(p, vec2(w)))) {
+    float w1 = 0.08;
+    float step1 = step / 5.0;
+    vec2 p1 = vec2(mod(pc.x, step1), mod(pc.y, step1));
+    vec2 c2 =  vec2((1.0 - w1) * step1);
+    if(any(greaterThan(p1, c2))) {
+        gl_FragColor = blockColor * 0.4;
+    }
+
+    float w = 0.016;
+    vec2 p = vec2(mod(pc.x, step), mod(pc.y, step));
+    vec2 c1 =  vec2((1.0 - w) * step);
+    if(any(greaterThan(p, c1))) {
         gl_FragColor = blockColor;
     }
 
-    float w1 = 0.01;
-    vec2 p1 = fract(pt * n * 5.0);   
-    if(any(greaterThan(p1, vec2(1.0 - w1))) || any(lessThan(p1, vec2(w1)))) {
-        gl_FragColor = blockColor * 0.5;
-    }
-
-    vec2 pc = abs(pt);
-    if(any(lessThan(pc, vec2(0.004)))) {
+    if(any(lessThan(pc, vec2(2.0)))) {
         gl_FragColor = crossColor;
     }
 }

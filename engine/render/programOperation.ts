@@ -6,7 +6,6 @@ import pTextFs from './shader/pText.fs'
 
 import coordinateVs from './shader/coordinate.vs'
 import coordinateFs from './shader/coordinate.fs'
-import coordinateFs1 from './shader/coordinate1.fs'
 
 import lineVs from './shader/line.vs';
 import lineFs from './shader/line.fs';
@@ -36,7 +35,7 @@ export function initializePrograms(gl: WebGLRenderingContext, map: Map<string, W
     map.set('ptext', p2)
 
     const vs3 = createVertexShader(gl, coordinateVs)
-    const fs3 = createFragmentShader(gl, coordinateFs1)
+    const fs3 = createFragmentShader(gl, coordinateFs)
     const p3 = createWebGLProgram(gl, vs3, fs3)
     map.set('coordinate', p3)
 

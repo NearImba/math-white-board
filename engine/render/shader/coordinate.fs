@@ -4,90 +4,45 @@ $fsheader
 uniform vec2 u_Resolution;
 uniform vec2 u_Translate;
 uniform vec3 u_Config;
+
 varying vec4 v_Position;
 
 vec4 bgColor = vec4(1.0, 1.0, 1.0, 1.0);
 
-vec4 crossColor = vec4(1.0, 0.0, 0.0, 0.0);
+vec4 crossColor = vec4(0.0, 0.0, 1.0, 1.0);
 
-// draw the cross
-float cross (vec2 p, float w) {
-    float u_XStep = u_Config.x;
-    float u_YStep = u_Config.y;
-    float u_XMax = u_Config.z;
-    float f = step(0.0 - w / 2.0, p.x) * step(p.x, 0.0 + w / 2.0) + step(0.0 - w / 2.0, p.y) * step(p.y, 0.0 + w / 2.0);
-    return f;
-}
-
-// draw the smallblock
-float block (vec2 p, float w) {
-    float f = step(w, p.x) * step(p.x, 1.0 - w) * step(w, p.y) * step(p.y, 1.0 - w);
-    if(f > 0.0) {
-        return 0.0;
-    } else {
-        return 1.0;
-    }
-}
-
-float sinLine(vec2 p, float w) {
-    return 1.0;
-}
-
-bool blocks(vec2 p2, float w) {
-    float u_XStep = u_Config.x;
-    float u_YStep = u_Config.y;
-    float u_XMax = u_Config.z;
-    float xs = w / u_XStep;
-    float ys = w / u_YStep;
-    vec2 p3 = fract(vec2(p2.x * .5 *u_XMax / u_XStep, p2.y * .5 * u_XMax / u_YStep));
-    vec2 p4 = abs(p3 - 0.5);
-    if(p4.x < xs || p4.x + xs > 0.5 || p4.y < ys || p4.y + ys > 0.5) {
-        return true;
-    }
-    return false;
-}
-
-bool coordinateSign(vec2 p, float h) {
-    float u_XStep = u_Config.x;
-    float u_YStep = u_Config.y;
-    float u_XMax = u_Config.z;
-    vec2 p1 = p * u_XMax;
-    float chx = 0.1;
-    if(abs(p1.x) > chx && abs(p1.y) > chx) {
-        return false;
-    }
-
-    float y1 = abs(smoothstep(0.0, u_YStep, abs(mod(p1.y, u_YStep))) - 0.5);
-    if(abs(p1.x) < chx && y1 + h / u_YStep > 0.5) {
-        return true;
-    }
-
-    float x1 = abs(smoothstep(0.0, u_XStep, abs(mod(p1.x, u_XStep))) - 0.5);
-    if(abs(p1.y) < chx && x1 + h / u_XStep > 0.5) {
-        return true;
-    }
-
-    return false;
-}
+vec4 blockColor = vec4(1.0, 0.0, 0.0, 1.0);
 
 void main() {
-    vec2 posi = vec2(v_Position) - u_Translate;
-    vec2 p2 = vec2(posi.x, posi.y * u_Resolution.y / u_Resolution.x);
-    float u_XStep = u_Config.x;
-    float u_YStep = u_Config.y;
-    float u_XMax = u_Config.z;
+    float aspect = u_Config.y;
+    float step = u_Config.x;
+    // vec2 pt = (gl_FragCoord.xy - 0.5) / u_Resolution.xy -.5 - u_Translate * 0.5;
+    // vec2 pt = v_Position.xy - u_Translate;
 
-    float minWidth = u_XMax / max(u_Resolution.x, u_Resolution.y);
+    vec2 pt = (gl_FragCoord.xy - 0.5) - u_Resolution * 0.5;
+    vec2 translate = vec2(u_Translate.x * u_Resolution.x * 0.5, u_Translate.y * u_Resolution.y * 0.5);
+    pt -= translate;
 
-    if(blocks(p2, 0.008)) {
-        gl_FragColor = vec4(1.0, 0.0, 1.0, .6);
+    gl_FragColor = bgColor;
+
+    vec2 pc = abs(pt);
+
+    float w1 = 0.08;
+    float step1 = step / 5.0;
+    vec2 p1 = vec2(mod(pc.x, step1), mod(pc.y, step1));
+    vec2 c2 =  vec2((1.0 - w1) * step1);
+    if(any(greaterThan(p1, c2))) {
+        gl_FragColor = blockColor * 0.4;
     }
 
-    if(cross(vec2(p2.x, p2.y), 0.006) > 0.0) {
-        gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);    
+    float w = 0.016;
+    vec2 p = vec2(mod(pc.x, step), mod(pc.y, step));
+    vec2 c1 =  vec2((1.0 - w) * step);
+    if(any(greaterThan(p, c1))) {
+        gl_FragColor = blockColor;
     }
 
-    if(coordinateSign(p2, 0.002)) {
-        gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+    if(any(lessThan(pc, vec2(2.0)))) {
+        gl_FragColor = crossColor;
     }
 }

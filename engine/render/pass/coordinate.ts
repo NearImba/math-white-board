@@ -1,6 +1,6 @@
 import Types from "../../base/types";
 import Store from "../../store/index";
-import { steps } from '../../config'
+import { steps, renderSafeSpacing } from '../../config'
 
 const SIZE = Float32Array.BYTES_PER_ELEMENT;
 
@@ -16,10 +16,9 @@ export default function renderCoordinate(gl: WebGLRenderingContext, type: Types,
             const uConfig = gl.getUniformLocation(currentProgram, "u_Config");
             const uTranslate = gl.getUniformLocation(currentProgram, 'u_Translate');
             const size = store.getSize()
-            const max = store.N;
 
             gl.uniform2f(resolution, size.width, size.height);
-            gl.uniform3f(uConfig, max, store.AS, store.X);
+            gl.uniform3f(uConfig, renderSafeSpacing[store.SI % 2], store.AS, store.X);
             const translate = store.getTranslate();
             gl.uniform2f(uTranslate, translate.x / store.X, translate.y / (store.X * store.AS));
             gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);

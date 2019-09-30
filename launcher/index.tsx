@@ -298,7 +298,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
     render() {
         const { width, height, enableFullscreen, enableScale } = this.props;
         const { loading, fullscreen, error, steppers, latexs } = this.state;
-        console.log(latexs)
+
         return <div ref={this.Container} style={{ width: `${width}px`, height: `${height}px` }} className="math-stage-instance">
             <canvas ref={this.Canvas} width={width} height={height} />
             <div className={`loading ${loading ? '' : 'hide'}`} />
