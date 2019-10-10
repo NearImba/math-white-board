@@ -1,13 +1,17 @@
 {
   "name": "math-stage-pro",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "react+webpack",
-  "main": "app/index.js",
+  "main": "lib/launcher.js",
+  "peerDependencies": {
+    "react": ">=16.0.0",
+    "react-dom": ">=16.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --hot --config ./webpack/webpack.dev.js",
-    "build": "webpack --config ./webpack/webpack.build.js",
-    "build-alpha": "webpack --config ./webpack/webpack.alpha.js"
+    "site": "webpack --config ./webpack/webpack.site.js",
+    "build": "webpack --config ./webpack/webpack.build.js"
   },
   "author": "NearImba",
   "license": "ISC",
