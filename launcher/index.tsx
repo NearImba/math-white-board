@@ -14,13 +14,13 @@ import { steps } from '../engine/config'
 
 import './index.less'
 
-enum QualityLeveL {
+export enum QualityLeveL {
     high = 'high',
     normal = 'normal',
     low = 'low',
 }
 
-interface MathStageProps {
+export interface MathStageProps {
     width: number;
     height: number;
     file: string;
@@ -299,7 +299,7 @@ export default class MathStage extends React.Component<MathStageProps, MathStage
         const { width, height, enableFullscreen, enableScale } = this.props;
         const { loading, fullscreen, error, steppers, latexs } = this.state;
 
-        return <div ref={this.Container} style={{ width: `${width}px`, height: `${height}px` }} className="math-stage-instance">
+        return <div ref={this.Container} style={{ width: `${width}px`, height: `${height}px`, fontSize: `10px` }} className="math-stage-instance">
             <canvas ref={this.Canvas} width={width} height={height} />
             <div className={`loading ${loading ? '' : 'hide'}`} />
             <div className={`error ${error ? '' : 'hide'}`} />

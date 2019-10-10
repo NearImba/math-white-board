@@ -1,6 +1,6 @@
 {
   "name": "math-stage-pro",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "react+webpack",
   "main": "lib/launcher.js",
   "peerDependencies": {
