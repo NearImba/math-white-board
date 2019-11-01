@@ -11,6 +11,7 @@ export default class Mo {
     specifiedColor: Vec3;
     data: any;
     constructor() {
+        this.id = (Date.now() * Math.random()).toFixed(0);
         this.specifiedColor = {
             x: Math.floor(c / (65025)) % 255,
             y: Math.floor(c / 255) % 255,

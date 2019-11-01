@@ -1,16 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const pxtorem = require('postcss-pxtorem');
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const appName = require('../package.json').name;
 
 module.exports = {
     entry: {
-        editor: './editor/demo.tsx',
-        launcher: './launcher/index.tsx',
-        single: './editor/index.tsx',
+        sync: './editor/demo.tsx',
+        // launcher: './launcher/index.tsx',
+        single: './editor/single.tsx',
+        editor: './editor/index.tsx',
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
@@ -42,11 +42,6 @@ module.exports = {
                         autoprefixer({
                             browsers: ['last 15 versions'],
                         }),
-                        // pxtorem({
-                        //     rootValue: 100,
-                        //     replace: true,
-                        //     propList: ['*'],
-                        // }),
                     ],
                 },
             }, {
@@ -87,8 +82,8 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './editor/index.html',
-            filename: 'editor.html',
-            chunks: ['editor'],
+            filename: 'sync.html',
+            chunks: ['sync'],
             minify: {
                 minifyCSS: true,
                 minifyJS: true,
@@ -103,11 +98,20 @@ module.exports = {
                 minifyJS: true,
             },
         }),
+        new HtmlWebpackPlugin({
+            template: './editor/index.html',
+            filename: 'editor.html',
+            chunks: ['editor', 'common'],
+            minify: {
+                minifyCSS: true,
+                minifyJS: true,
+            },
+        }),
         new MiniCssExtractPlugin({
             filename: "[name].[chunkhash].css",
         }),
         new webpack.DefinePlugin({
-            'process.env.PACKAGE': JSON.stringify(process.env.PACKAGE),
+            // 'process.env.PACKAGE': JSON.stringify(process.env.PACKAGE),
         }),
     ],
     resolve: {

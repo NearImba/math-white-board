@@ -11,8 +11,19 @@
         "sourceMap": true,
         "target": "es5",
         "jsx": "react",
-        "lib": ["dom", "es2015", "es2018.promise"],
+        "lib": [
+            "dom",
+            "es2015",
+            "es2018.promise"
+        ],
         "esModuleInterop": true,
         "module": "es2015"
+    },
+    "typeAcquisition": {
+        "enable": true,
+        "include": [
+            "launcher/**/**",
+            "typings/**/*"
+        ]
     }
 }

@@ -1,14 +1,44 @@
-import * as React from 'react'
+import React, { useReducer, useEffect, useRef } from 'react'
 import * as ReactDOM from 'react-dom'
 
-import MathStage from '../launcher/index'
+import MathRender from '../engine/index'
 
-const file = 'https://web-data.zmlearn.com/doc/4zFzFDQRr8PSE69gS66Zh3/courseware-1.txt'
+import Header from './components/header'
+import FuncToolBar from './components/func-tool-bar'
+import MathObjList from './components/obj-list'
+import AddStepper from './components/add-stepper'
+import './editor.less'
 
-function Index() {
-    return <div>
-        <MathStage width={900} height={420} file={file}/>
-    </div>
+import { editorContext, editorData, reducer } from './hooks/index'
+
+const width = 600;
+const height = 540;
+let MR: MathRender = null
+
+function Editor() {
+    const [state, dispatch] = useReducer(reducer, editorData);
+    const Canvas = useRef(null)
+    useEffect(() => {
+        console.log('mode change:' + state.mode)
+        if (!MR) {
+            MR = new MathRender({
+                Canvas: Canvas.current,
+                iWidth: width,
+                iHeight: height,
+            })
+        }
+        MR.render(state.mathObjCollections)
+    }, [state.mode, state.mathObjCollections])
+    return (<editorContext.Provider value={{ state, dispatch }}>
+        <div className="editor-container">
+            <Header />
+            <FuncToolBar />
+            <MathObjList />
+            <AddStepper />
+            <canvas ref={Canvas} width={width} height={height} />
+        </div>
+    </editorContext.Provider>)
 }
 
-ReactDOM.render(<Index />, document.querySelector('#app'))
+ReactDOM.render(<Editor />, document.querySelector('#app'))
+

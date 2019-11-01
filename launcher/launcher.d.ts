@@ -1,0 +1,1 @@
+import { MathStageProps } from './index'
