@@ -12,8 +12,6 @@ ReactDOM.render(<MathStage ref={this.B} width={900} enableFullscreen={false} hei
 
 ### 数据通信示例
 
-[DEMO地址](https://frontend.zmlearn.com/math-stage/dist/editor.html)
-
 代码示例
 
 ```
