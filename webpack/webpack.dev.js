@@ -11,17 +11,9 @@ module.exports = merge(baseConfig, {
         ignored: /node_modules/,
     },
     devServer: {
-        contentBase: path.join(__dirname, '../dist'),
+        contentBase: path.join(__dirname, '../dist/'),
         publicPath: `/${appName}/`,
-        port: 9000,
+        port: 9001,
         host: '0.0.0.0',
-        proxy: {
-            /* 代理在这 */
-        },
     },
-    // optimization: {
-    //     splitChunks: {
-    //         chunks: 'all',
-    //     },
-    // },
 });

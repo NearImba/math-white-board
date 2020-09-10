@@ -3,7 +3,7 @@ import { editorContext } from '../hooks/index'
 
 import Mo from '../../engine/mos/mo';
 
-function Item(props: any): any {
+function Item(props: any): ReactElement {
     const { dispatch } = useContext(editorContext);
     return useMemo(() => {
         function onClick(id: string) {

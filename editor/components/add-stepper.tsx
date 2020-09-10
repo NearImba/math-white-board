@@ -28,7 +28,7 @@ export default function AddStepper() {
         dispatch({
             type: 'ADD',
             data: new Stepper({
-                name: 'a',
+                name,
                 min,
                 max,
                 step,

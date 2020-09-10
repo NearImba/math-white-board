@@ -9,5 +9,4 @@ export default function Pop(props: { show: boolean, children: ReactElement[]} ) 
     } else {
         return null
     }
-
 }
