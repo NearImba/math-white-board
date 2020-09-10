@@ -20,7 +20,7 @@ import * as ReactDOM from 'react-dom'
 
 import MathStage from '../launcher/index'
 
-const file = 'https://web-data.zmlearn.com/doc/4zFzFDQRr8PSE69gS66Zh3/courseware-1.txt'
+const file = '/courseware-1.txt'
 
 class Index extends React.Component {
     A = React.createRef<MathStage>()
