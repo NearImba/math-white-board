@@ -12,7 +12,7 @@ module.exports = merge(baseConfig, {
     },
     devServer: {
         contentBase: path.join(__dirname, '../dist/'),
-        publicPath: `/${appName}/`,
+        publicPath: '',
         port: 9001,
         host: '0.0.0.0',
     },
